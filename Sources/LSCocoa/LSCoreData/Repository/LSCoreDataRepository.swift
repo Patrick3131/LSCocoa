@@ -115,6 +115,12 @@ open class LSCoreDataRepository<ManagedObject>: DataRepository where ManagedObje
         }
     }
     
+    public func deletePublisher(_ item: StoredItem) -> AnyPublisher<Void, Error> {
+        backgroundPerformPublisher { [weak self] in
+            self?.stack.backgroundContext.delete(item)
+        }
+    }
+    
     private func backgroundPerformPublisher(instructions: @escaping () -> Void) -> AnyPublisher<Void, Error> {
             Deferred {
                 Future { [weak self] promise in
