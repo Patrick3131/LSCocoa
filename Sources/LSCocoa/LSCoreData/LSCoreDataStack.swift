@@ -10,11 +10,16 @@ public class LSCoreDataStack {
     
     public let modelName: String
     
-    public init(modelName: String, notificationCenter: NotificationCenter = NotificationCenter.default) throws {
+    public init(modelName: String, managedObjectModel: NSManagedObjectModel? = nil, notificationCenter: NotificationCenter = NotificationCenter.default) throws {
         self.notificationCenter = notificationCenter
         self.modelName = modelName
-        
-        let persistentContainer = NSPersistentContainer(name: modelName)
+        let persistentContainer: NSPersistentContainer
+        if let managedObjectModel = managedObjectModel {
+            persistentContainer = NSPersistentContainer(
+                name: modelName, managedObjectModel: managedObjectModel)
+        } else {
+            persistentContainer = NSPersistentContainer(name: modelName)
+        }
         persistentContainer.loadPersistentStores { (_, error) in
             if let error = error {
                 fatalError("Failed to load Core Data stack: \(error)")
