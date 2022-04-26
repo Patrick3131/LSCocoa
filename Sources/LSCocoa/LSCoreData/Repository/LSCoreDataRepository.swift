@@ -127,9 +127,7 @@ open class LSCoreDataRepository<ManagedObject>: DataRepository where ManagedObje
                     self?.stack.backgroundContext.perform { [weak self] in
                         instructions()
                         do {
-                            if self?.stack.backgroundContext.hasChanges == true {
-                                try self?.stack.backgroundContext.save()
-                            }
+                            self?.stack.backgroundContext.saveIfNeeded()
                         } catch let error {
                             print(error)
                             print(error.localizedDescription)
@@ -146,9 +144,7 @@ open class LSCoreDataRepository<ManagedObject>: DataRepository where ManagedObje
         stack.backgroundContext.perform { [weak self] in
             instructions()
             do {
-                if self?.stack.backgroundContext.hasChanges == true {
-                    try self?.stack.backgroundContext.save()
-                }
+                self?.stack.backgroundContext.saveIfNeeded()
             } catch let error {
                 print(error)
                 print(error.localizedDescription)
