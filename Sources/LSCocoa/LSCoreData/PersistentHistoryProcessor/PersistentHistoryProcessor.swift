@@ -10,7 +10,7 @@ import CoreData
 
 
 public class PersistentHistoryProcessor: NSObject {
-    public typealias Config = (currentOriginator: PersistentHistoryOriginator, userDefaults: UserDefaults)
+    public typealias Config = (currentOriginator: PersistentDataOriginator, userDefaults: UserDefaults)
     private let config: Config
     private var context: NSManagedObjectContext?
     

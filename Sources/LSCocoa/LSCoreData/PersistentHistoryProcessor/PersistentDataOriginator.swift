@@ -27,7 +27,7 @@ import Foundation
  }
   ````
  */
-public protocol PersistentHistoryOriginator {
+public protocol PersistentDataOriginator {
     var identifier: String { get }
-    var allOrignators: [PersistentHistoryOriginator] { get }
+    var allOrignators: [PersistentDataOriginator] { get }
 }
