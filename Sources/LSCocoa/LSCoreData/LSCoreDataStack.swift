@@ -38,7 +38,8 @@ public class LSCoreDataStack {
         backgroundContext = persistentContainer.newBackgroundContext()
                 
         setupContextMerging()
-        persistentHistoryProcessor?.setup(context: backgroundContext,
+        persistentHistoryProcessor?.setup(mainContext: mainContext,
+                                          backgroundContext: backgroundContext,
                                           container: persistentContainer,
                                           notificationCenter: notificationCenter)
     }

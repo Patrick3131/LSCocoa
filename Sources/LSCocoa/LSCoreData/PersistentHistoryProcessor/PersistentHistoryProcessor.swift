@@ -33,10 +33,13 @@ public class PersistentHistoryProcessor: NSObject {
         persistentContainer.persistentStoreDescriptions = [storeDescription]
     }
     
-    internal func setup(context: NSManagedObjectContext,
+    internal func setup(mainContext: NSManagedObjectContext,
+                        backgroundContext: NSManagedObjectContext,
                         container: NSPersistentContainer,
                         notificationCenter: NotificationCenter) {
-        self.context = context
+        mainContext.name = config.currentOriginator.identifier
+        mainContext.transactionAuthor = config.currentOriginator.identifier
+        self.context = backgroundContext
         startObserving(container: container, notificationCenter: notificationCenter)
     }
     
