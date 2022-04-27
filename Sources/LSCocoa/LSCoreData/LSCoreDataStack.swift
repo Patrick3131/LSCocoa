@@ -3,6 +3,7 @@ import CoreData
 
 public class LSCoreDataStack {
     
+    private var persistentHistoryProcessor: PersistentHistoryProcessor?
     public let mainContext: NSManagedObjectContext
     public let backgroundContext: NSManagedObjectContext
     
@@ -10,16 +11,23 @@ public class LSCoreDataStack {
     
     public let modelName: String
     
-    public init(modelName: String, managedObjectModel: NSManagedObjectModel? = nil, notificationCenter: NotificationCenter = NotificationCenter.default) throws {
+    public init(modelName: String,
+                managedObjectModel: NSManagedObjectModel? = nil,
+                notificationCenter: NotificationCenter = NotificationCenter.default,
+                persistentHistoryProcessor: PersistentHistoryProcessor? = nil) throws {
         self.notificationCenter = notificationCenter
         self.modelName = modelName
         let persistentContainer: NSPersistentContainer
+        
+        self.persistentHistoryProcessor = persistentHistoryProcessor
+        
         if let managedObjectModel = managedObjectModel {
             persistentContainer = NSPersistentContainer(
                 name: modelName, managedObjectModel: managedObjectModel)
         } else {
             persistentContainer = NSPersistentContainer(name: modelName)
         }
+        persistentHistoryProcessor?.addStoreDescriptions(for: persistentContainer)
         persistentContainer.loadPersistentStores { (_, error) in
             if let error = error {
                 fatalError("Failed to load Core Data stack: \(error)")
@@ -30,6 +38,9 @@ public class LSCoreDataStack {
         backgroundContext = persistentContainer.newBackgroundContext()
                 
         setupContextMerging()
+        persistentHistoryProcessor?.setup(context: backgroundContext,
+                                          container: persistentContainer,
+                                          notificationCenter: notificationCenter)
     }
     
     private func setupContextMerging() {
