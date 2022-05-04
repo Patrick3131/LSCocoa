@@ -28,7 +28,7 @@ public class LSCoreDataStack {
             persistentContainer = NSPersistentContainer(name: modelName)
         }
         persistentHistoryProcessor?.addStoreDescriptions(for: persistentContainer)
-        persistentContainer.loadPersistentStores { (_, error) in
+        persistentContainer.loadPersistentStores { (storeDescription, error) in
             if let error = error {
                 fatalError("Failed to load Core Data stack: \(error)")
             }

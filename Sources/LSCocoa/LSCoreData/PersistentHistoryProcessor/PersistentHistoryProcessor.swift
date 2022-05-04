@@ -27,10 +27,12 @@ public class PersistentHistoryProcessor: NSObject {
     }
     
     internal func addStoreDescriptions(for persistentContainer:  NSPersistentContainer) {
-        let storeDescription = NSPersistentStoreDescription()
-        storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
-        storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-        persistentContainer.persistentStoreDescriptions = [storeDescription]
+        if let storeURL = persistentContainer.persistentStoreDescriptions.last?.url {
+            let storeDescription = NSPersistentStoreDescription(url: storeURL)
+            storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+            storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+            persistentContainer.persistentStoreDescriptions = [storeDescription]
+        }
     }
     
     internal func setup(mainContext: NSManagedObjectContext,
