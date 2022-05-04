@@ -10,9 +10,17 @@ import CoreData
 
 
 public class PersistentHistoryProcessor: NSObject {
-    public typealias Config = (currentOriginator: PersistentDataOriginator, userDefaults: UserDefaults)
+    public struct Config {
+        let currentOriginator: PersistentDataOriginator
+        let userDefaults: UserDefaults
+        public init(currentOriginator: PersistentDataOriginator,
+                    userDefaults: UserDefaults = .standard) {
+            self.currentOriginator = currentOriginator
+            self.userDefaults = userDefaults
+        }
+    }
     private let config: Config
-    private var context: NSManagedObjectContext?
+    private var backgroundContext: NSManagedObjectContext?
     
     public init(config: Config) throws {
         let allTargets = config.currentOriginator.allOrignators
@@ -41,7 +49,7 @@ public class PersistentHistoryProcessor: NSObject {
                         notificationCenter: NotificationCenter) {
         mainContext.name = config.currentOriginator.identifier
         mainContext.transactionAuthor = config.currentOriginator.identifier
-        self.context = backgroundContext
+        self.backgroundContext = backgroundContext
         startObserving(container: container, notificationCenter: notificationCenter)
     }
     
@@ -52,7 +60,7 @@ public class PersistentHistoryProcessor: NSObject {
     }
     
     @objc private func process(_ notification: Notification) {
-        context?.performAndWait {
+        backgroundContext?.performAndWait {
             do {
                 try merge()
                 try clean()
